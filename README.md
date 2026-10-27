@@ -2,6 +2,8 @@
 
 A Victoria 3 mod: the game pauses before ahead-of-time research runs past its base cost, so you can switch research before the points go to waste.
 
+**[Subscribe on the Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3828125161)**
+
 ![Research Stop](mod/thumbnail.png)
 
 ## The problem

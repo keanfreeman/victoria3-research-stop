@@ -1,0 +1,1 @@
+﻿gui/rsm_research_stop.gui = rsm_research_stop

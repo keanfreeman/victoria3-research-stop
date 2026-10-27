@@ -1,0 +1,121 @@
+# RESEARCH STOP (mod): pauses the game before ahead-of-time research runs past
+# the technology's base era cost.
+#
+# A technology from a later era costs extra while earlier-era technologies in its
+# category are unresearched (TECH_AHEAD_OF_TIME_PENALTY_FACTOR). Once those arrive,
+# e.g. by technology spread, the cost drops back to the era's base cost, and any
+# progress beyond that is lost. This widget watches the current research and
+# pauses once the next week's progress could pass the base cost.
+#
+# Created on game start by gui/scripted_widgets/rsm_widgets.txt, so no vanilla
+# file or GUI type is replaced.
+#
+# rsm_latched holds the name of the last technology it stopped for, so each
+# technology stops at most once (per game session). rsm_alert holds the name of
+# the technology the alert is showing for; the alert hides itself when research
+# moves to a different technology.
+
+widget = {
+	name = "rsm_research_stop"
+	size = { 100% 100% }
+	layer = top
+	alwaystransparent = yes
+	visible = "[GetPlayer.IsValid]"
+
+	### Watcher. Only shown while something is being researched.
+	widget = {
+		name = "rsm_watcher"
+		size = { 1 1 }
+		alwaystransparent = yes
+		visible = "[GetPlayer.HasCurrentlyResearchedTechnology]"
+		datacontext = "[AccessPlayer.AccessCurrentlyResearchedTechnology]"
+
+		# Penalty applies (cost > era base cost), next week's progress reaches the
+		# base cost, and it hasn't already stopped for this technology.
+		state = {
+			name = rsm_stop_running
+			trigger_when = "[And( And( And( GreaterThan_int32( FixedPointToInt( Technology.GetCost( GetPlayer.Self ) ), Technology.GetEra.GetTechnologyCost ), GreaterThanOrEqualTo_int32( FixedPointToInt( Add_CFixedPoint( Technology.GetProgress( GetPlayer.Self ), GetPlayer.GetMaxWeeklyTechnologyProgressForTech( Technology.Self ) ) ), Technology.GetEra.GetTechnologyCost ) ), Not( GetVariableSystem.HasValue( 'rsm_latched', Technology.GetNameNoFormatting ) ) ), Not( TimeKeeper.IsPaused ) )]"
+			duration = 0.01
+			on_start = "[GetVariableSystem.Set( 'rsm_latched', Technology.GetNameNoFormatting )]"
+			on_start = "[GetVariableSystem.Set( 'rsm_alert', Technology.GetNameNoFormatting )]"
+			on_start = "[TimeKeeper.TogglePause]"
+		}
+		# Same, but already paused (e.g. the technology was picked while paused):
+		# just show the alert.
+		state = {
+			name = rsm_stop_paused
+			trigger_when = "[And( And( And( GreaterThan_int32( FixedPointToInt( Technology.GetCost( GetPlayer.Self ) ), Technology.GetEra.GetTechnologyCost ), GreaterThanOrEqualTo_int32( FixedPointToInt( Add_CFixedPoint( Technology.GetProgress( GetPlayer.Self ), GetPlayer.GetMaxWeeklyTechnologyProgressForTech( Technology.Self ) ) ), Technology.GetEra.GetTechnologyCost ) ), Not( GetVariableSystem.HasValue( 'rsm_latched', Technology.GetNameNoFormatting ) ) ), TimeKeeper.IsPaused )]"
+			duration = 0.01
+			on_start = "[GetVariableSystem.Set( 'rsm_latched', Technology.GetNameNoFormatting )]"
+			on_start = "[GetVariableSystem.Set( 'rsm_alert', Technology.GetNameNoFormatting )]"
+		}
+	}
+
+	### Alert
+	widget = {
+		name = "rsm_alert"
+		datacontext = "[AccessPlayer.AccessCurrentlyResearchedTechnology]"
+		visible = "[And( GetPlayer.HasCurrentlyResearchedTechnology, GetVariableSystem.HasValue( 'rsm_alert', Technology.GetNameNoFormatting ) )]"
+		parentanchor = top|hcenter
+		# Below the top bar
+		position = { 0 110 }
+		size = { 480 100 }
+		using = clickthrough_blocker
+		alwaystransparent = no
+
+		background = {
+			using = default_background
+		}
+
+		flowcontainer = {
+			direction = vertical
+			resizeparent = yes
+			ignoreinvisible = yes
+			margin = { 15 0 }
+			margin_top = 10
+			margin_bottom = 12
+			minimumsize = { 480 -1 }
+			spacing = 8
+
+			text_single = {
+				text = "RSM_ALERT_TITLE"
+				using = fontsize_large
+			}
+			textbox = {
+				text = "RSM_ALERT_BODY"
+				multiline = yes
+				autoresize = yes
+				min_width = 450
+				max_width = 450
+				align = left|nobaseline
+			}
+			textbox = {
+				text = "RSM_ALERT_HINT"
+				multiline = yes
+				autoresize = yes
+				min_width = 450
+				max_width = 450
+				align = left|nobaseline
+				default_format = "#grey"
+			}
+
+			flowcontainer = {
+				direction = horizontal
+				spacing = 6
+				button_standard = {
+					size = { 170 28 }
+					text = "RSM_OPEN_TECH"
+					tooltip = "RSM_OPEN_TECH_TOOLTIP"
+					onclick = "[GetVariableSystem.Clear('rsm_alert')]"
+					onclick = "[InformationPanelBar.OpenPanelDontToggle('tech_tree')]"
+				}
+				button_standard = {
+					size = { 170 28 }
+					text = "RSM_KEEP"
+					tooltip = "RSM_KEEP_TOOLTIP"
+					onclick = "[GetVariableSystem.Clear('rsm_alert')]"
+				}
+			}
+		}
+	}
+}

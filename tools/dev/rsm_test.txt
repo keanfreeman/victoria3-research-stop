@@ -1,0 +1,29 @@
+﻿# Test events. Not shipped: copy into mod/events/ (then run tools/install.sh) to use.
+# The 1.13 console has no `effect` command; run e.g. `event rsm_test.1` instead.
+namespace = rsm_test
+
+# Puts Atmospheric Engine just under its era II base cost (10,000).
+rsm_test.1 = {
+	type = country_event
+	hidden = yes
+
+	immediate = {
+		add_technology_progress = {
+			technology = atmospheric_engine
+			progress = 9500
+		}
+	}
+}
+
+# Run after rsm_test.1: 9,950 + 50 weekly gain reaches the base cost.
+rsm_test.2 = {
+	type = country_event
+	hidden = yes
+
+	immediate = {
+		add_technology_progress = {
+			technology = atmospheric_engine
+			progress = 450
+		}
+	}
+}

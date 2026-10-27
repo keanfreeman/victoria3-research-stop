@@ -1,0 +1,8 @@
+﻿l_english:
+ RSM_ALERT_TITLE:0 "Research Stop"
+ RSM_ALERT_BODY:0 "#v [Technology.GetName]#! is at @innovation! #v [Technology.GetProgress(GetPlayer.Self)|0]#! of #v [Technology.GetCost(GetPlayer.Self)|0]#!. Without the ahead-of-time penalty it would cost only #v [Technology.GetEra.GetTechnologyCost]#!, and next week's progress (up to #v [GetPlayer.GetMaxWeeklyTechnologyProgressForTech(Technology.Self)|0]#!) could pass that."
+ RSM_ALERT_HINT:0 "Once the earlier-era technologies arrive, the cost drops back to the base cost and progress beyond it is lost. Switch research now and come back to this technology later."
+ RSM_OPEN_TECH:0 "Open Technology"
+ RSM_OPEN_TECH_TOOLTIP:0 "Open the technology screen to pick something else to research."
+ RSM_KEEP:0 "Keep Researching"
+ RSM_KEEP_TOOLTIP:0 "Close this alert. It won't stop again for this technology."

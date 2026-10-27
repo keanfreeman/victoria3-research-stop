@@ -1,0 +1,15 @@
+{
+  "name": "Research Stop",
+  "id": "research_stop_mod",
+  "version": "0.1.0",
+  "supported_game_version": "1.13.*",
+  "short_description": "Pauses the game before ahead-of-time research passes its base cost, so you can switch before the points go to waste.",
+  "tags": [
+    "Utilities",
+    "Interface"
+  ],
+  "relationships": [],
+  "game_custom_data": {
+    "multiplayer_synchronized": true
+  }
+}
